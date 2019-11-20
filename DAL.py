@@ -24,8 +24,11 @@ class DAL:
         train_data = np.array([np.expand_dims(resize(np.array(x), (50, 50)), axis=0)
                                for x in self.data_set])
         tensor_x = torch.stack([torch.Tensor(i) for i in train_data])
-        tensor_y = torch.Tensor(self.labels)
+        labels = np.array(self.labels, dtype=np.long)
+        print(labels)
+        tensor_y = torch.from_numpy(labels)
         processed_dataset = torch.utils.data.TensorDataset(tensor_x, tensor_y)
+        print(tensor_y)
         return processed_dataset
 
 
