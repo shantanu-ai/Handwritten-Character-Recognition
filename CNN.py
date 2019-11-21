@@ -10,10 +10,16 @@ class Network(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=128, kernel_size=5)
+        self.bn1 = nn.BatchNorm2d(num_features=128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
         self.conv2 = nn.Conv2d(in_channels=128, out_channels=192, kernel_size=3)
+        self.bn2 = nn.BatchNorm2d(num_features=192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
 
         self.conv3 = nn.Conv2d(in_channels=192, out_channels=256, kernel_size=3)
+        self.bn3 = nn.BatchNorm2d(num_features=256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+
         self.conv4 = nn.Conv2d(in_channels=256, out_channels=128, kernel_size=3)
+        self.bn4 = nn.BatchNorm2d(num_features=128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
 
         self.fc1 = nn.Linear(in_features=128 * 2 * 2, out_features=1024)
         self.out = nn.Linear(in_features=1024, out_features=9)
@@ -21,21 +27,25 @@ class Network(nn.Module):
     def forward(self, t):
         # 1st conv layer
         t = self.conv1(t)
+        t = self.bn1(t)
         t = F.relu(t)
         t = F.max_pool2d(t, kernel_size=2, stride=2)
 
         # 2nd conv layer
         t = self.conv2(t)
+        t = self.bn2(t)
         t = F.relu(t)
         t = F.max_pool2d(t, kernel_size=2, stride=2)
 
         # 3rd conv layer
         t = self.conv3(t)
+        t = self.bn3(t)
         t = F.relu(t)
         t = F.max_pool2d(t, kernel_size=2, stride=2)
 
         # 4th conv layer
         t = self.conv4(t)
+        t = self.bn4(t)
         t = F.relu(t)
 
         # 5th layer

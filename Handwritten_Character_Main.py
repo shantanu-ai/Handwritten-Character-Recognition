@@ -5,7 +5,7 @@ if __name__ == '__main__':
     data_set_path = "train_data.pkl"
     label_set_path = "finalLabelsTrain.npy"
     image_dims = (52, 52)
-    epochs = 12
+    epochs = 10
     split_size = 0.01
     parameters = OrderedDict(
         lr=[0.01],
