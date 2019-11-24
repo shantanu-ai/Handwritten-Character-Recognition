@@ -12,7 +12,7 @@ class HandWrittenRecognitionDeep:
         self.__test_set = None
         self.__validation_set = None
         self.__test_set_size = None
-        self.__validation_set_size = None
+        # self.__validation_set_size = None
 
     def perform_hand_written_char_recognition(self, data_set_path, label_set_path, image_dims, parameters, split_size,
                                               model_directory_path, model_path, classes,
@@ -27,16 +27,16 @@ class HandWrittenRecognitionDeep:
         X_train, X_test, Y_train, Y_test = HWCRUtils.spilt_data_set(train_data_set,
                                                                     labels_set,
                                                                     split_size=split_size)
-        X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
-                                                                  Y_train,
-                                                                  split_size=split_size)
+        # X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
+        #                                                           Y_train,
+        #                                                           split_size=split_size)
         train_set = HWCRUtils.convert_to_tensor(X_train, Y_train)
         test_set = HWCRUtils.convert_to_tensor(X_test, Y_test)
-        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
+        # val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
 
         self.__train_set = train_set
         self.__test_set = test_set
-        self.__validation_set = val_set
+        # self.__validation_set = val_set
         self.__test_set_size = Y_test.shape[0]
         self.__validation_set_size = Y_test.shape[0]
 
@@ -51,7 +51,7 @@ class HandWrittenRecognitionDeep:
 
     def __test_model(self, network, classes, parameters):
         test = Test_Manager()
-        ret = test.test_data_set(self.__validation_set, network, HWCRUtils.get_runs(parameters)[0])
+        ret = test.test_data_set(self.__test_set, network, HWCRUtils.get_runs(parameters)[0])
         percent_correct = (ret['total_correct'] / self.__test_set_size) * 100
         confusion_matrix = ret['confusion_matrix'][1:9, 1:9]
         print(f"total loss test: {ret['total_loss']}")

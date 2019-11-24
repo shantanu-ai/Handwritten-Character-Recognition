@@ -7,7 +7,7 @@ if __name__ == '__main__':
     image_dims = (52, 52)
     epochs = 12
     # epochs = 1
-    split_size = 0.01
+    split_size = 0.10
     parameters = OrderedDict(
         lr=[0.01],
         batch_size=[64]

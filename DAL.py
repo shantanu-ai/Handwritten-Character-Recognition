@@ -26,32 +26,3 @@ class DAL:
                                for x in self.data_set])
         long_labels = np.array(self.labels, dtype=np.long)
         return train_data, long_labels
-
-
-if __name__ == "__main__":
-    dal = DAL()
-    # dal.read_data("train_data.pkl", "finalLabelsTrain.npy")
-    # train_data_set, long_labels_set = dal.pre_process_data_set((52, 52))
-    # X_train, X_test, y_train, y_test = DAL.spilt_data_set(train_data_set,
-    #                                                       long_labels_set,
-    #                                                       split_size=0.01)
-    # X_train, X_val, y_train, y_val = DAL.spilt_data_set(X_train,
-    #                                                     y_train,
-    #                                                     split_size=0.01)
-    #
-    # my_dataset = DAL.convert_to_tensor(X_train, y_train)
-    #
-    # print(collections.Counter(y_train))
-    # print(collections.Counter(y_test))
-    # print(collections.Counter(y_val))
-    #
-    # data_loader = torch.utils.data.DataLoader(
-    #     my_dataset, batch_size=100, num_workers=1
-    # )
-    # images, labels = next(iter(data_loader))
-    #
-    # first_image = images[49]
-    # first_image = np.array(first_image, dtype="float")
-    # pixels = first_image.reshape((52, 52))
-    # plt.imshow(pixels, cmap="gray")
-    # plt.show()
