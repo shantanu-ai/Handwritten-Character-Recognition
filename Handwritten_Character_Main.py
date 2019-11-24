@@ -10,7 +10,7 @@ if __name__ == '__main__':
     split_size = 0.01
     parameters = OrderedDict(
         lr=[0.01],
-        batch_size=[100]
+        batch_size=[64]
     )
     classes = [1, 2, 3, 4, 5, 6, 7, 8]
 
