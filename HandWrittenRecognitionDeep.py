@@ -7,56 +7,39 @@ import numpy as np
 
 
 class HandWrittenRecognitionDeep:
-    def __init__(self):
-        self.__train_set = None
-        self.__test_set = None
-        self.__validation_set = None
-        self.__test_set_size = None
-        # self.__validation_set_size = None
-
-    def perform_hand_written_char_recognition(self, data_set_path, label_set_path, image_dims, parameters, split_size,
-                                              model_directory_path, model_path, classes,
-                                              epochs=10):
-        self.__split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size)
-        network = self.__train_model(parameters, model_directory_path, model_path,
-                                     epochs)
-        self.__test_model(network, classes, parameters)
-
-    def __split_train_test_validation_set(self, data_set_path, label_set_path, image_dims, split_size):
+    @staticmethod
+    def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size):
         train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
         X_train, X_test, Y_train, Y_test = HWCRUtils.spilt_data_set(train_data_set,
                                                                     labels_set,
                                                                     split_size=split_size)
-        # X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
-        #                                                           Y_train,
-        #                                                           split_size=split_size)
+        X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
+                                                                  Y_train,
+                                                                  split_size=split_size)
         train_set = HWCRUtils.convert_to_tensor(X_train, Y_train)
         test_set = HWCRUtils.convert_to_tensor(X_test, Y_test)
-        # val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
+        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
 
-        self.__train_set = train_set
-        self.__test_set = test_set
-        # self.__validation_set = val_set
-        self.__test_set_size = Y_test.shape[0]
-        self.__validation_set_size = Y_test.shape[0]
+        return train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 
-    def __train_model(self, parameters, model_directory_path, model_path,
-                      epochs=10):
+    @staticmethod
+    def train_model(run, train_set, model_directory_path, model_path,
+                    epochs=10):
         train = Train_Manager()
-        response = train.train_data_set(self.__train_set,
-                                        HWCRUtils.get_runs(parameters)[0],
+        response = train.train_data_set(train_set,
+                                        run,
                                         model_directory_path, model_path,
                                         epochs)
         return response["network"]
 
-    def __test_model(self, network, classes, parameters):
+    def test_model(self, network, validation_set, validation_size, classes, run):
         test = Test_Manager()
-        ret = test.test_data_set(self.__test_set, network, HWCRUtils.get_runs(parameters)[0])
-        percent_correct = (ret['total_correct'] / self.__test_set_size) * 100
+        ret = test.test_data_set(validation_set, network, run)
+        percent_correct = (ret['total_correct'] / validation_size) * 100
         confusion_matrix = ret['confusion_matrix'][1:9, 1:9]
         print(f"total loss test: {ret['total_loss']}")
         print(f"correctly predicted: {ret['total_correct']}")
-        print(f"actual correct: {self.__test_set_size}")
+        print(f"actual correct: {validation_size}")
         print(f"% correct: {percent_correct}")
         self.__show_accuracy_class(confusion_matrix, classes)
         self.__plot_confusion_matrix(confusion_matrix=confusion_matrix, classes=classes)
