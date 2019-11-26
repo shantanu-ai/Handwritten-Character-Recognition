@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch import nn
 from collections import namedtuple
 from itertools import product
 import sklearn.model_selection as sklearn
