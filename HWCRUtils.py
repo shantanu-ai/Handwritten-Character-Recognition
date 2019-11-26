@@ -46,3 +46,22 @@ class HWCRUtils:
             runs.append(Run(*v))
 
         return runs
+
+    @staticmethod
+    def resize_padded(image, new_shape):
+        img = torch.from_numpy(image)
+        delta_width = new_shape - img.shape[1]
+        delta_height = new_shape - img.shape[0]
+        pad_width = delta_width // 2
+        pad_height = delta_height // 2
+        if delta_width % 2 != 0:
+            if delta_height % 2 != 0:
+                pad = nn.ConstantPad2d((pad_width, pad_width + 1, pad_height, pad_height + 1), False)
+            else:
+                pad = nn.ConstantPad2d((pad_width, pad_width + 1, pad_height, pad_height), False)
+        else:
+            if delta_height % 2 != 0:
+                pad = nn.ConstantPad2d((pad_width, pad_width, pad_height, pad_height + 1), False)
+            else:
+                pad = nn.ConstantPad2d((pad_width, pad_width, pad_height, pad_height), False)
+        return pad(img).numpy()
