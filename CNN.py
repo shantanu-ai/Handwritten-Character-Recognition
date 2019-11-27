@@ -21,7 +21,7 @@ class Network(nn.Module):
         self.conv4 = nn.Conv2d(in_channels=256, out_channels=128, kernel_size=3)
         self.bn4 = nn.BatchNorm2d(num_features=128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
 
-        self.fc1 = nn.Linear(in_features=128 * 2 * 2, out_features=1024)
+        self.fc1 = nn.Linear(in_features=128 * 4 * 4, out_features=1024)
         self.out = nn.Linear(in_features=1024, out_features=9)
 
     def forward(self, t):
@@ -49,7 +49,7 @@ class Network(nn.Module):
         t = F.relu(t)
 
         # 5th layer
-        t = self.fc1(t.reshape(-1, 128 * 2 * 2))
+        t = self.fc1(t.reshape(-1, 128 * 4 * 4))
         t = F.relu(t)
 
         # output layer
