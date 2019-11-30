@@ -1,6 +1,7 @@
 from collections import OrderedDict
-from HandWrittenRecognitionDeep import HandWrittenRecognitionDeep
+
 from HWCRUtils import HWCRUtils
+from HandWrittenRecognitionDeep import HandWrittenRecognitionDeep
 
 
 def test_with_diff_params():
@@ -10,16 +11,22 @@ def test_with_diff_params():
     #     shuffle=[False]
     # )
 
+    # parameters = OrderedDict(
+    #     lr=[0.01],
+    #     batch_size=[64, 128],
+    #     shuffle=[False]
+    # )
+
     parameters = OrderedDict(
         lr=[0.01],
-        batch_size=[64, 128],
+        batch_size=[64],
         shuffle=[False]
     )
     run_list = HWCRUtils.get_runs(parameters)
     data_set_path = "train_data.pkl"
     label_set_path = "finalLabelsTrain.npy"
     image_dims = (52, 52)
-    epochs = 10
+    epochs = 1
     # epochs = 1
     split_size = 0.03
     classes = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -31,11 +38,18 @@ def test_with_diff_params():
 
     for run in run_list:
         print(run)
-        model_path = model_directory_path + "hwcr_cnn_lr" + str(run.lr) + \
-                     "_batch_size_" + str(run.batch_size) + \
-                     "shuffle_" + str(run.shuffle) + ".pt"
-        network = hwRD.train_model(run, train_set, model_directory_path, model_path, epochs)
-        hwRD.test_model(network, validation_set, validation_size, classes, run)
+        model_path_no_bn = model_directory_path + "no_bn_hwcr_cnn_lr_" + str(run.lr) + \
+                           "_batch_size_" + str(run.batch_size) + \
+                           "shuffle_" + str(run.shuffle) + ".pt"
+        model_path_bn = model_directory_path + "bn_hwcr_cnn_lr_" + str(run.lr) + \
+                        "_batch_size_" + str(run.batch_size) + \
+                        "shuffle_" + str(run.shuffle) + ".pt"
+        model_paths = (model_path_no_bn, model_path_bn)
+
+        response = hwRD.train_model(run, train_set, model_directory_path, model_paths, epochs)
+
+        hwRD.test_model(response["network_bn"], validation_set, validation_size, classes, run, "With Batch Normalization")
+        hwRD.test_model(response["network_no_bn"], validation_set, validation_size, classes, run, "Without Batch Normalization")
 
 
 if __name__ == '__main__':

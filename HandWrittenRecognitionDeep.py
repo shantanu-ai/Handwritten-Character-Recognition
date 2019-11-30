@@ -1,9 +1,9 @@
-from HWCRUtils import HWCRUtils
-from Train import Train_Manager
-from Test import Test_Manager
 import matplotlib.pyplot as plt
-
 import numpy as np
+
+from HWCRUtils import HWCRUtils
+from Test import Test_Manager
+from Train import Train_Manager
 
 
 class HandWrittenRecognitionDeep:
@@ -23,20 +23,21 @@ class HandWrittenRecognitionDeep:
         return train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 
     @staticmethod
-    def train_model(run, train_set, model_directory_path, model_path,
-                    epochs=10):
+    def train_model(run, train_set, model_directory_path, model_paths, epochs=10):
         train = Train_Manager()
-        response = train.train_data_set(train_set,
-                                        run,
-                                        model_directory_path, model_path,
+        response = train.train_data_set(train_set, run, model_directory_path, model_paths,
                                         epochs)
-        return response["network"]
+        return {
+            "network_bn": response["network_bn"],
+            "network_no_bn": response["network_no_bn"]
+        }
 
-    def test_model(self, network, validation_set, validation_size, classes, run):
+    def test_model(self, network, validation_set, validation_size, classes, run, type_of_bn):
         test = Test_Manager()
         ret = test.test_data_set(validation_set, network, run)
         percent_correct = (ret['total_correct'] / validation_size) * 100
         confusion_matrix = ret['confusion_matrix'][1:9, 1:9]
+        print(f"#### {type_of_bn} #####")
         print(f"total loss test: {ret['total_loss']}")
         print(f"correctly predicted: {ret['total_correct']}")
         print(f"actual correct: {validation_size}")

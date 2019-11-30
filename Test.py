@@ -12,7 +12,6 @@ torch.set_grad_enabled(True)
 class Test_Manager:
     def test_data_set(self, test_set, network, run):
         confusion_matrix = np.zeros([9, 9], int)
-        final_tot_correct = []
         batch_size = run.batch_size
         lr = run.lr
 
