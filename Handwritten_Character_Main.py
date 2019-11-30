@@ -26,7 +26,7 @@ def test_with_diff_params():
     data_set_path = "train_data.pkl"
     label_set_path = "finalLabelsTrain.npy"
     image_dims = (52, 52)
-    epochs = 1
+    epochs = 10
     # epochs = 1
     split_size = 0.03
     classes = [1, 2, 3, 4, 5, 6, 7, 8]
