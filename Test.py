@@ -17,7 +17,7 @@ class Test_Manager:
 
         # set batch size
         data_loader = torch.utils.data.DataLoader(
-            test_set, batch_size=batch_size, num_workers=1, shuffle=False
+            test_set, batch_size=batch_size, num_workers=1, shuffle=False, pin_memory=True
         )
 
         # set optimizer - Adam
@@ -54,6 +54,8 @@ class Test_Manager:
             total_correct += HWCRUtils.get_num_correct(preds, labels)
             for i, l in enumerate(labels):
                 confusion_matrix[l.item(), predicted[i].item()] += 1
+
+            torch.cuda.empty_cache()
 
         return {
             "network": network,
