@@ -18,12 +18,10 @@ class Network(nn.Module):
         self.conv4 = nn.Conv2d(in_channels=256, out_channels=128, kernel_size=3)
 
         self.fc1 = nn.Linear(in_features=128 * 4 * 4, out_features=1024)
-        self.fc2 = nn.Linear(in_features=1024, out_features=512)
-        self.out = nn.Linear(in_features=512, out_features=9)
+        self.out = nn.Linear(in_features=1024, out_features=9)
 
     def forward(self, t):
         # 1st conv layer
-        t = t.float().cuda()
         t = self.conv1(t)
         t = F.relu(t)
         t = F.max_pool2d(t, kernel_size=2, stride=2)
@@ -44,9 +42,6 @@ class Network(nn.Module):
 
         # 5th layer
         t = self.fc1(t.reshape(-1, 128 * 4 * 4))
-        t = F.relu(t)
-
-        t = self.fc2(t)
         t = F.relu(t)
 
         # output layer

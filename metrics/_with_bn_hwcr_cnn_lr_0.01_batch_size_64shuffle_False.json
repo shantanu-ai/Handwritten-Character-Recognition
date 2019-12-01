@@ -1,0 +1,13 @@
+[
+    {
+        "run": 1,
+        "epoch": 1,
+        "loss": 1.8210910896272126,
+        "accuracy": 0.0,
+        "epoch_duration": 228.541846036911,
+        "run_duration": 233.42752313613892,
+        "lr": 0.01,
+        "batch_size": 64,
+        "shuffle": false
+    }
+]

@@ -26,7 +26,7 @@ class RunManager:
         self.loader = None
         self.tb = None
 
-    def begin_run(self, run, network, loader, device, type_of_bn):
+    def begin_run(self, run, network, loader, type_of_bn):
         self.run_start_time = time.time()
 
         self.run_id += 1
@@ -35,8 +35,6 @@ class RunManager:
         self.loader = loader
         self.tb = SummaryWriter(comment=f'{type_of_bn} -{run}')
         images, labels = next(iter(self.loader))
-        images = images.to(device)
-        labels = labels.to(device)
         grid = torchvision.utils.make_grid(images)
         self.tb.add_image("images", grid)
         self.tb.add_graph(network, images)

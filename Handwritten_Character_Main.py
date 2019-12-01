@@ -1,5 +1,4 @@
 from collections import OrderedDict
-import torch
 
 from sklearn.model_selection import cross_val_score
 from skorch import NeuralNetClassifier
@@ -9,31 +8,21 @@ from HandWrittenRecognitionDeep import HandWrittenRecognitionDeep
 
 
 def perform_CV(response, X_train, Y_train, cv, run, epochs):
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    logistic_no_bn = NeuralNetClassifier(response["network_no_bn"], max_epochs=epochs, lr=run.lr, device=device)
-    scores_no_bn = cross_val_score(logistic_no_bn, X_train, Y_train, cv=cv, scoring="accuracy")
-    print("CV Score with No Batch Normalization")
-    print(f'run: {run} | scores: {scores_no_bn.mean()}')
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    logistic_bn = NeuralNetClassifier(response["network_bn"], max_epochs=epochs, lr=run.lr, device=device)
+    logistic_bn = NeuralNetClassifier(response["network_bn"], max_epochs=epochs, lr=run.lr)
     scores_bn = cross_val_score(logistic_bn, X_train, Y_train, cv=cv, scoring="accuracy")
     print("CV Score with Batch Normalization")
-    print(f'run: {run} | scores: {scores_bn.mean()}')
+    print(scores_bn.mean())
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    logistic_dropout = NeuralNetClassifier(response["network_bn_dropout"], max_epochs=epochs, lr=run.lr, device=device)
-    scores_dropout = cross_val_score(logistic_dropout, X_train, Y_train, cv=cv, scoring="accuracy")
+    logistic_no_bn = NeuralNetClassifier(response["network_no_bn"], max_epochs=epochs, lr=run.lr)
+    scores_no_bn = cross_val_score(logistic_no_bn, X_train, Y_train, cv=cv, scoring="accuracy")
     print("CV Score with No Batch Normalization")
-    print(f'run: {run} | scores: {scores_dropout.mean()}')
-
-    return scores_bn.mean(), scores_no_bn.mean(), scores_dropout.mean()
+    print(scores_no_bn.mean())
 
 
 def test_with_diff_params():
     # parameters = OrderedDict(
-    #     lr=[0.01, 0.001],
-    #     batch_size=[64, 128],
+    #     lr=[0.01, 0.001, 0.03, 0.5],
+    #     batch_size=[32, 64, 128, 256],
     #     shuffle=[False]
     # )
 
@@ -44,28 +33,24 @@ def test_with_diff_params():
     # )
 
     parameters = OrderedDict(
-        lr=[0.001],
+        lr=[0.01],
         batch_size=[64],
         shuffle=[False]
     )
     run_list = HWCRUtils.get_runs(parameters)
     data_set_path = "train_data.pkl"
     label_set_path = "finalLabelsTrain.npy"
-    # data_set_path = "./output_40000/data.npy"
-    # label_set_path = "./output_40000/labels.npy"
-    image_dims = (64, 64)
-    epochs = 25
+    image_dims = (52, 52)
+    epochs = 1
     # epochs = 1
     split_size = 0.03
-    classes = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    classes = [1, 2, 3, 4, 5, 6, 7, 8]
     cv = 10
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    model_directory_path = './model/model'
-    save_logistics_file_path = './metrics/'
+    model_directory_path = '/Users/shantanughosh/Desktop/Shantanu_MS/Fall 19/FML/Project/Code_base/Handwritten-Character-Recognition/model/model'
+    save_logistics_file_path = '/Users/shantanughosh/Desktop/Shantanu_MS/Fall 19/FML/Project/Code_base/Handwritten-Character-Recognition/metrics/'
     hwRD = HandWrittenRecognitionDeep()
     X_train, Y_train, train_set, test_set, validation_set, validation_size, test_set_size, validation_set_size = \
-        hwRD.split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device)
+        hwRD.split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size)
 
     for run in run_list:
         print("--------------------------------------------")
@@ -85,7 +70,7 @@ def test_with_diff_params():
 
         response = hwRD.train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, epochs)
 
-        #cv_scores_bn, cv_scores_no_bn, cv_scores_dropout = perform_CV(response, X_train, Y_train, cv, run, epochs)
+        # perform_CV(response, X_train, Y_train, cv, run, epochs)
 
         hwRD.test_model(response["network_bn"], validation_set, validation_size, classes, run,
                         "With Batch Normalization")
@@ -98,6 +83,4 @@ def test_with_diff_params():
 
 
 if __name__ == '__main__':
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(torch.cuda.get_device_name(0))
     test_with_diff_params()

@@ -17,12 +17,11 @@ class Test_Manager:
 
         # set batch size
         data_loader = torch.utils.data.DataLoader(
-            test_set, batch_size=batch_size, num_workers=1, shuffle=False, pin_memory=True
+            test_set, batch_size=batch_size, num_workers=1, shuffle=False
         )
 
         # set optimizer - Adam
         optimizer = optim.Adam(network.parameters(), lr=lr)
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         # start training
         total_loss = 0
@@ -30,8 +29,6 @@ class Test_Manager:
 
         for batch in data_loader:
             images, labels = batch
-            images = images.to(device)
-            labels = labels.to(device)
 
             # forward propagation
             preds = network(images)
@@ -54,8 +51,6 @@ class Test_Manager:
             total_correct += HWCRUtils.get_num_correct(preds, labels)
             for i, l in enumerate(labels):
                 confusion_matrix[l.item(), predicted[i].item()] += 1
-
-            torch.cuda.empty_cache()
 
         return {
             "network": network,
