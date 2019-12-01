@@ -20,16 +20,17 @@ class HandWrittenRecognitionDeep:
         test_set = HWCRUtils.convert_to_tensor(X_test, Y_test)
         val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
 
-        return train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
+        return X_train, Y_train, train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 
     @staticmethod
-    def train_model(run, train_set, model_directory_path, model_paths, epochs=10):
+    def train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, epochs=10):
         train = Train_Manager()
-        response = train.train_data_set(train_set, run, model_directory_path, model_paths,
+        response = train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
                                         epochs)
         return {
             "network_bn": response["network_bn"],
-            "network_no_bn": response["network_no_bn"]
+            "network_no_bn": response["network_no_bn"],
+            "network_bn_dropout": response["network_bn_dropout"]
         }
 
     def test_model(self, network, validation_set, validation_size, classes, run, type_of_bn):

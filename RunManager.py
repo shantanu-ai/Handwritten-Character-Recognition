@@ -92,4 +92,10 @@ class RunManager:
 
         with open(f'{fileName}.json', 'w', encoding="utf-8") as f:
             json.dump(self.run_data, f, ensure_ascii=False, indent=4)
+
+    def get_final_loss_val(self):
+        return self.epoch_loss
+
+    def get_final_correct(self):
+        return self.epoch_id_total_correct
 0
