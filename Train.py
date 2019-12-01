@@ -66,6 +66,9 @@ class Train_Manager:
         return loss
 
     def __train_network(self, train_set, run, save_logistics_file_path, epochs, type):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        print("-------------------------------------------------------------------", device)
+
         batch_size = run.batch_size
         lr = run.lr
         shuffle = run.shuffle
@@ -92,6 +95,8 @@ class Train_Manager:
 
             for batch in data_loader:
                 images, labels = batch
+                images = images.to(device)
+                labels = labels.to(device)
 
                 # forward propagation
                 predictions = model(images)

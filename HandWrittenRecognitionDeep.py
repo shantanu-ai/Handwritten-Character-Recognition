@@ -8,7 +8,7 @@ from Train import Train_Manager
 
 class HandWrittenRecognitionDeep:
     @staticmethod
-    def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size):
+    def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device):
         train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
         X_train, X_test, Y_train, Y_test = HWCRUtils.spilt_data_set(train_data_set,
                                                                     labels_set,
@@ -16,9 +16,9 @@ class HandWrittenRecognitionDeep:
         X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
                                                                   Y_train,
                                                                   split_size=split_size)
-        train_set = HWCRUtils.convert_to_tensor(X_train, Y_train)
-        test_set = HWCRUtils.convert_to_tensor(X_test, Y_test)
-        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
+        train_set = HWCRUtils.convert_to_tensor(X_train, Y_train, device)
+        test_set = HWCRUtils.convert_to_tensor(X_test, Y_test, device)
+        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val, device)
 
         return X_train, Y_train, train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 

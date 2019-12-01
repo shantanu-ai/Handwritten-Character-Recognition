@@ -22,6 +22,7 @@ class Test_Manager:
 
         # set optimizer - Adam
         optimizer = optim.Adam(network.parameters(), lr=lr)
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         # start training
         total_loss = 0
@@ -29,6 +30,8 @@ class Test_Manager:
 
         for batch in data_loader:
             images, labels = batch
+            images = images.to(device)
+            labels = labels.to(device)
 
             # forward propagation
             preds = network(images)

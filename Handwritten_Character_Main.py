@@ -46,11 +46,13 @@ def test_with_diff_params():
     split_size = 0.03
     classes = [1, 2, 3, 4, 5, 6, 7, 8]
     cv = 10
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     model_directory_path = '/Users/shantanughosh/Desktop/Shantanu_MS/Fall 19/FML/Project/Code_base/Handwritten-Character-Recognition/model/model'
     save_logistics_file_path = '/Users/shantanughosh/Desktop/Shantanu_MS/Fall 19/FML/Project/Code_base/Handwritten-Character-Recognition/metrics/'
     hwRD = HandWrittenRecognitionDeep()
     X_train, Y_train, train_set, test_set, validation_set, validation_size, test_set_size, validation_set_size = \
-        hwRD.split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size)
+        hwRD.split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device)
 
     for run in run_list:
         print("--------------------------------------------")
@@ -83,4 +85,6 @@ def test_with_diff_params():
 
 
 if __name__ == '__main__':
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(torch.cuda.get_device_name(0))
     test_with_diff_params()
