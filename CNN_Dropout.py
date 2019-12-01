@@ -23,10 +23,7 @@ class Network(nn.Module):
 
         self.fc1 = nn.Linear(in_features=128 * 4 * 4, out_features=1024)
         self.drop_out = nn.Dropout(p=0.3)
-
-        self.fc2 = nn.Linear(in_features=1024, out_features=512)
-        self.drop_out_2 = nn.Dropout(p=0.3)
-        self.out = nn.Linear(in_features=512, out_features=9)
+        self.out = nn.Linear(in_features=1024, out_features=9)
 
     def forward(self, t):
         # 1st conv layer
@@ -56,10 +53,6 @@ class Network(nn.Module):
         # 5th layer
         t = self.fc1(t.reshape(-1, 128 * 4 * 4))
         t = self.drop_out(t)
-        t = F.relu(t)
-
-        t = self.fc2(t)
-        t = self.drop_out_2(t)
         t = F.relu(t)
 
         # output layer

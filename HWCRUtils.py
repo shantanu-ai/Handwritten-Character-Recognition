@@ -25,7 +25,7 @@ class HWCRUtils:
         return X_train, X_test, Y_train, Y_test
 
     @staticmethod
-    def convert_to_tensor(X, Y, device):
+    def convert_to_tensor(X, Y):
         tensor_x = torch.stack([torch.Tensor(i) for i in X])
         tensor_y = torch.from_numpy(Y)
         processed_dataset = torch.utils.data.TensorDataset(tensor_x, tensor_y)

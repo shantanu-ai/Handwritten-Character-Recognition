@@ -25,7 +25,7 @@ class DAL:
         img_height, img_width = img_dims
         train_data = np.array([np.expand_dims(self.resize_padded(np.array(x), 64), axis=0)
                                for x in self.data_set])
-        long_labels = np.array(self.labels, dtype=np.longlong)
+        long_labels = np.array(self.labels, dtype=np.long)
         return train_data, long_labels
 
     @staticmethod

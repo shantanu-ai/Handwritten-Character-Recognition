@@ -22,12 +22,11 @@ class Network(nn.Module):
         self.bn4 = nn.BatchNorm2d(num_features=128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
 
         self.fc1 = nn.Linear(in_features=128 * 4 * 4, out_features=1024)
-        self.fc2 = nn.Linear(in_features=1024, out_features=512)
-        self.out = nn.Linear(in_features=512, out_features=9)
+        self.out = nn.Linear(in_features=1024, out_features=9)
 
     def forward(self, t):
         # 1st conv layer
-        t = t.float().cuda()
+        t = t.float()
         t = self.conv1(t)
         t = self.bn1(t)
         t = F.relu(t)
@@ -52,9 +51,6 @@ class Network(nn.Module):
 
         # 5th layer
         t = self.fc1(t.reshape(-1, 128 * 4 * 4))
-        t = F.relu(t)
-
-        t = self.fc2(t)
         t = F.relu(t)
 
         # output layer
