@@ -8,17 +8,21 @@ from Train import Train_Manager
 
 class HandWrittenRecognitionDeep:
     @staticmethod
-    def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size):
-        train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
+    def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device):
+        # train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
+        custom_data_set, custom_labels_set = HWCRUtils.read_dataset("./output_40000/data.npy", "./output_40000/labels.npy", image_dims)
+        train_data_set1, labels_set1 = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
+        train_data_set = np.concatenate((train_data_set1, custom_data_set), axis=0)
+        labels_set = np.concatenate((labels_set1, custom_labels_set), axis=0)
         X_train, X_test, Y_train, Y_test = HWCRUtils.spilt_data_set(train_data_set,
                                                                     labels_set,
                                                                     split_size=split_size)
         X_train, X_val, Y_train, Y_val = HWCRUtils.spilt_data_set(X_train,
                                                                   Y_train,
                                                                   split_size=split_size)
-        train_set = HWCRUtils.convert_to_tensor(X_train, Y_train)
-        test_set = HWCRUtils.convert_to_tensor(X_test, Y_test)
-        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val)
+        train_set = HWCRUtils.convert_to_tensor(X_train, Y_train, device)
+        test_set = HWCRUtils.convert_to_tensor(X_test, Y_test, device)
+        val_set = HWCRUtils.convert_to_tensor(X_val, Y_val, device)
 
         return X_train, Y_train, train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 

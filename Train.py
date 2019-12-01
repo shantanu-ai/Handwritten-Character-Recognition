@@ -17,9 +17,10 @@ torch.set_grad_enabled(True)
 
 class Train_Manager:
     def __init__(self):
-        self.network_no_bn = CNN_no_bn()
-        self.network_bn = CNN_bn()
-        self.network_bn_dropout = CNN_dropout()
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.network_no_bn = CNN_no_bn().to(device=device)
+        self.network_bn = CNN_bn().to(device=device)
+        self.network_bn_dropout = CNN_dropout().to(device=device)
 
     def train_data_set(self, train_set, run, model_directory_path, model_paths, save_logistics_file_path,
                        epochs):
@@ -66,12 +67,16 @@ class Train_Manager:
         return loss
 
     def __train_network(self, train_set, run, save_logistics_file_path, epochs, type):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        print("-------------------------------------------------------------------", device)
+
         batch_size = run.batch_size
         lr = run.lr
         shuffle = run.shuffle
 
         # set batch size
-        data_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=shuffle, num_workers=1)
+        data_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=shuffle, num_workers=1,
+                                                  pin_memory=True)
 
         save_file_name = save_logistics_file_path + self.__get_file_name(type, shuffle, lr, batch_size)
         model = self.__getModel(type)
@@ -84,7 +89,9 @@ class Train_Manager:
         # initialise summary writer
         run_manager = RunManager()
 
-        run_manager.begin_run(run, model, data_loader, tb_summary)
+        run_manager.begin_run(run, model, data_loader, device, tb_summary)
+
+        torch.backends.cudnn.enabled = False
 
         # start training
         for epoch in range(epochs):
@@ -92,6 +99,8 @@ class Train_Manager:
 
             for batch in data_loader:
                 images, labels = batch
+                images = images.to(device)
+                labels = labels.to(device)
 
                 # forward propagation
                 predictions = model(images)
@@ -109,6 +118,7 @@ class Train_Manager:
                 optimizer.step()
 
                 run_manager.track_loss(loss)
+                run_manager.track_total_correct_per_epoch(predictions, labels)
 
             run_manager.end_epoch()
 
