@@ -31,11 +31,11 @@ def perform_CV(response, X_train, Y_train, cv, run, epochs):
 
 
 def test_with_diff_params():
-    # parameters = OrderedDict(
-    #     lr=[0.01, 0.001],
-    #     batch_size=[64, 128],
-    #     shuffle=[False]
-    # )
+    parameters = OrderedDict(
+        lr=[0.01, 0.001, 0.005, 0.3],
+        batch_size=[32, 64, 128],
+        shuffle=[False]
+    )
 
     # parameters = OrderedDict(
     #     lr=[0.01],
@@ -43,11 +43,11 @@ def test_with_diff_params():
     #     shuffle=[False]
     # )
 
-    parameters = OrderedDict(
-        lr=[0.001],
-        batch_size=[64],
-        shuffle=[False]
-    )
+    # parameters = OrderedDict(
+    #     lr=[0.001],
+    #     batch_size=[64],
+    #     shuffle=[False]
+    # )
     run_list = HWCRUtils.get_runs(parameters)
     data_set_path = "train_data.pkl"
     label_set_path = "finalLabelsTrain.npy"
@@ -85,7 +85,7 @@ def test_with_diff_params():
 
         response = hwRD.train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, epochs)
 
-        #cv_scores_bn, cv_scores_no_bn, cv_scores_dropout = perform_CV(response, X_train, Y_train, cv, run, epochs)
+        # cv_scores_bn, cv_scores_no_bn, cv_scores_dropout = perform_CV(response, X_train, Y_train, cv, run, epochs)
 
         hwRD.test_model(response["network_bn"], validation_set, validation_size, classes, run,
                         "With Batch Normalization")

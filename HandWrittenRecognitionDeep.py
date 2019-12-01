@@ -41,7 +41,7 @@ class HandWrittenRecognitionDeep:
         test = Test_Manager()
         ret = test.test_data_set(validation_set, network, run)
         percent_correct = (ret['total_correct'] / validation_size) * 100
-        confusion_matrix = ret['confusion_matrix'][1:9, 1:9]
+        confusion_matrix = ret['confusion_matrix']
         print(f"#### {type_of_bn} #####")
         print(f"total loss test: {ret['total_loss']}")
         print(f"correctly predicted: {ret['total_correct']}")

@@ -40,15 +40,6 @@ class Test_Manager:
             # estimate loss
             loss = F.cross_entropy(preds, labels)
 
-            # zero out grads for every new iteration
-            optimizer.zero_grad()
-
-            # back propagation
-            loss.backward()
-
-            # update weights
-            # w = w - lr * grad_dw
-            optimizer.step()
 
             total_loss += loss.item()
             total_correct += HWCRUtils.get_num_correct(preds, labels)
