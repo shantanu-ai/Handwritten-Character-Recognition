@@ -18,7 +18,7 @@ class Test_Manager:
 
         # set batch size
         data_loader = torch.utils.data.DataLoader(
-            test_set, batch_size=batch_size, num_workers=1, shuffle=False, pin_memory=True
+            test_set, num_workers=1, shuffle=False, pin_memory=True
         )
 
         # set optimizer - Adam
@@ -28,6 +28,8 @@ class Test_Manager:
         # start training
         total_loss = 0
         total_correct = 0
+        output = {}
+        idx = 1
 
         for batch in data_loader:
             images, labels = batch
@@ -42,18 +44,25 @@ class Test_Manager:
             loss = F.cross_entropy(preds, labels)
 
             total_loss += loss.item()
+            if predicted.data == 0:
+                output[idx] = -1
+            else:
+                output[idx] = predicted.item()
+
             total_correct += HWCRUtils.get_num_correct(preds, labels)
             for i, l in enumerate(labels):
                 confusion_matrix[l.item(), predicted[i].item()] += 1
 
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
+            idx = idx + 1
 
         return {
             "network": network,
             "total_loss": total_loss,
             "total_correct": total_correct,
-            "confusion_matrix": confusion_matrix
+            "confusion_matrix": confusion_matrix,
+            "output": output
         }
 
     def test_class_probabilities(self, model, device, test_set, batch_size, which_class):
