@@ -39,8 +39,9 @@ class HandWrittenRecognitionDeep:
                    device, show_confusion_matrix=False):
         test = Test_Manager()
         ret = test.test_data_set(data_set, network, run)
-        percent_correct = (ret['total_correct'] / data_set_size) * 100
-        confusion_matrix = ret['confusion_matrix']
+        unknown_count = ret['unknown_count']
+        percent_correct = (ret['total_correct'] / data_set_size - unknown_count) * 100
+        confusion_matrix = ret['confusion_matrix'][1:9, 1:9]
         print(f"#### {type_of_bn} #####")
         print(f"total loss test: {ret['total_loss']}")
         print(f"correctly predicted: {ret['total_correct']}")
@@ -51,9 +52,9 @@ class HandWrittenRecognitionDeep:
         if show_confusion_matrix:
             self.__plot_confusion_matrix(confusion_matrix=confusion_matrix, classes=classes)
             self.__print_confusion_matrix(confusion_matrix, classes)
-            actuals, class_probabilities = test.test_class_probabilities(network, device, data_set,
-                                                                         run.batch_size, which_class=8)
-            # self.__plotROC_curve(actuals, class_probabilities, which_class=8)
+            actual, class_probabilities = test.test_class_probabilities(network, device, data_set,
+                                                                        run.batch_size, which_class=8)
+            self.__plotROC_curve(actual, class_probabilities, which_class=8)
 
         return {
             "loss": ret['total_loss'],
@@ -71,7 +72,7 @@ class HandWrittenRecognitionDeep:
         fig, ax = plt.subplots(1, 1, figsize=(8, 6))
         ax.matshow(confusion_matrix, aspect='auto', vmin=0, vmax=5, cmap=plt.get_cmap('Blues'))
         plt.ylabel('Actual Category')
-        plt.yticks(range(9), classes)
+        plt.yticks(range(8), classes)
         plt.xlabel('Predicted Category')
         plt.xticks(range(8), classes)
         plt.show()
@@ -102,8 +103,9 @@ class HandWrittenRecognitionDeep:
         plt.title(title)
         plt.show()
 
-    def __plotROC_curve(actuals, class_probabilities, which_class):
-        fpr, tpr, _ = metrics.roc_curve(actuals, class_probabilities)
+    @staticmethod
+    def __plotROC_curve(actual, class_probabilities, which_class):
+        fpr, tpr, _ = metrics.roc_curve(actual, class_probabilities)
         roc_auc = metrics.auc(fpr, tpr)
         plt.figure()
         lw = 2
@@ -114,6 +116,6 @@ class HandWrittenRecognitionDeep:
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('ROC for digit=%d class' % which_class)
+        plt.title('ROC for character=%d class' % which_class)
         plt.legend(loc="lower right")
         plt.show()

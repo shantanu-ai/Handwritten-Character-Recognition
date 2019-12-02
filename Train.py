@@ -122,14 +122,14 @@ class Train_Manager:
         run_manager.end_run()
         run_manager.save(save_file_name)
         if show_plot:
-            self.plot_loss_val(loss_val)
+            self.plot_loss_val(loss_val, run)
 
         return model
 
     @staticmethod
-    def plot_loss_val(bn_loss):
+    def plot_loss_val(bn_loss, run):
         plt.plot(bn_loss)
-        plt.title('Fig: Loss vs Epoch')
+        plt.title(f'Fig: {run} Loss vs Epoch')
         plt.ylabel('Loss')
         plt.xlabel('Epoch')
         plt.show()
