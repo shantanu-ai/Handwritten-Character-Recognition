@@ -17,59 +17,55 @@ torch.set_grad_enabled(True)
 
 class Train_Manager:
     def __init__(self):
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.network_no_bn = CNN_no_bn().to(device=device)
-        self.network_bn = CNN_bn().to(device=device)
-        self.network_bn_dropout = CNN_dropout().to(device=device)
+        self.model = None
 
-    def train_data_set(self, train_set, run, model_directory_path, model_paths, save_logistics_file_path,
-                       epochs):
-        model_path_no_bn = model_paths[0]
-        model_path_bn = model_paths[1]
-        model_path_bn_dropout = model_paths[2]
+    def train_data_set(self, train_set, run, model_directory_path, model_path, save_logistics_file_path,
+                       epochs, type_of_model, show_plot):
+        model_updated = None
 
         if not os.path.exists(model_directory_path):
             os.makedirs(model_directory_path)
 
-        print("Training with batch Normalization")
-        bn_final_loss = self.__load_model(train_set, run, model_path_bn, save_logistics_file_path, epochs, "BatchNorm")
+        if type_of_model == "BatchNorm":
+            model = self.__getModel(type_of_model)
+            print("Training with batch Normalization")
+            model_updated = self.__load_model(model, train_set, run, model_path, save_logistics_file_path, epochs,
+                                              type_of_model, show_plot)
 
-        print("Training without batch Normalization")
-        no_bn_final_loss = self.__load_model(train_set, run, model_path_no_bn, save_logistics_file_path, epochs,
-                                             "NoBatchNorm")
+        elif type_of_model == "NoBatchNorm":
+            model = self.__getModel(type_of_model)
+            print("Training without batch Normalization")
+            model_updated = self.__load_model(model, train_set, run, model_path, save_logistics_file_path, epochs,
+                                              type_of_model, show_plot)
 
-        print("Training with Dropout")
-        drop_out_bn_final_loss = self.__load_model(train_set, run, model_path_bn_dropout, save_logistics_file_path,
-                                                   epochs, "Dropout")
+        elif type_of_model == "Dropout":
+            model = self.__getModel(type_of_model)
+            print("Training with Dropout")
+            model_updated = self.__load_model(model, train_set, run, model_path, save_logistics_file_path,
+                                              epochs, type_of_model, show_plot)
 
-        if not (bn_final_loss is None) and not (no_bn_final_loss is None) and not (drop_out_bn_final_loss is None):
-            self.plot_loss_val(bn_final_loss, no_bn_final_loss, drop_out_bn_final_loss, run)
+        return model_updated
 
-        return {
-            "network_bn": self.network_bn,
-            "network_no_bn": self.network_no_bn,
-            "network_bn_dropout": self.network_bn_dropout
-        }
-
-    def __load_model(self, train_set, run, model_path_no_bn, save_logistics_file_path, epochs, type):
-        model = self.__getModel(type)
-        loss = None
+    def __load_model(self, model, train_set, run, model_path_no_bn, save_logistics_file_path, epochs,
+                     type_of_model, show_plot):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         if os.path.isfile(model_path_no_bn):
             # load trained model parameters from disk
-            model.load_state_dict(torch.load(model_path_no_bn))
+            model.load_state_dict(torch.load(model_path_no_bn, map_location=device))
             print('Loaded model parameters from disk.')
         else:
-            loss = self.__train_network(train_set, run, save_logistics_file_path, epochs, type)
+            model = self.__train_network(model, train_set, run, save_logistics_file_path, epochs,
+                                         type_of_model, show_plot)
             print('Finished Training.')
             torch.save(model.state_dict(), model_path_no_bn)
             print('Saved model parameters to disk.')
 
-        return loss
+        return model
 
-    def __train_network(self, train_set, run, save_logistics_file_path, epochs, type):
+    def __train_network(self, model, train_set, run, save_logistics_file_path, epochs, type_of_model, show_plot):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print("-------------------------------------------------------------------", device)
-
+        loss_val = []
         batch_size = run.batch_size
         lr = run.lr
         shuffle = run.shuffle
@@ -78,9 +74,9 @@ class Train_Manager:
         data_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=shuffle, num_workers=1,
                                                   pin_memory=True)
 
-        save_file_name = save_logistics_file_path + self.__get_file_name(type, shuffle, lr, batch_size)
-        model = self.__getModel(type)
-        tb_summary = self.__get_tb_summary_title(type)
+        save_file_name = save_logistics_file_path + self.__get_file_name(type_of_model, shuffle, lr, batch_size)
+        # model = self.__getModel(type_of_model)
+        tb_summary = self.__get_tb_summary_title(type_of_model)
 
         # set optimizer - Adam
 
@@ -121,48 +117,49 @@ class Train_Manager:
                 run_manager.track_total_correct_per_epoch(predictions, labels)
 
             run_manager.end_epoch()
+            loss_val.append(run_manager.get_final_loss_val())
 
         run_manager.end_run()
         run_manager.save(save_file_name)
-        return run_manager.get_final_loss_val()
+        if show_plot:
+            self.plot_loss_val(loss_val)
+
+        return model
 
     @staticmethod
-    def plot_loss_val(bn_loss, no_bn_loss, dropout_loss, run):
-        batch_size = run.batch_size
-        lr = run.lr
-
-        plt.title(f' Learning rate: {lr} | Batch size: {batch_size}')
-        plt.plot(bn_loss, 'r', label='BatchNorm')
-        plt.plot(no_bn_loss, 'g', label='Without BatchNorm')
-        plt.plot(dropout_loss, 'b', label='With Prediction')
-        plt.legend()
+    def plot_loss_val(bn_loss):
+        plt.plot(bn_loss)
+        plt.title('Fig: Loss vs Epoch')
+        plt.ylabel('Loss')
+        plt.xlabel('Epoch')
         plt.show()
 
-    def __getModel(self, type):
-        if type == "BatchNorm":
-            return self.network_bn
-        elif type == "NoBatchNorm":
-            return self.network_no_bn
-        elif type == "Dropout":
-            return self.network_bn_dropout
+    def __getModel(self, type_of_model):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        if type_of_model == "BatchNorm":
+            return CNN_bn().to(device=device)
+        elif type_of_model == "NoBatchNorm":
+            return CNN_no_bn().to(device=device)
+        elif type_of_model == "Dropout":
+            return CNN_dropout().to(device=device)
 
     @staticmethod
-    def __get_file_name(type, shuffle, lr, batch_size):
-        if type == "BatchNorm":
+    def __get_file_name(type_of_model, shuffle, lr, batch_size):
+        if type_of_model == "BatchNorm":
             return "_with_bn_hwcr_cnn_lr_" + str(lr) + \
                    "_batch_size_" + str(batch_size) + "shuffle_" + str(shuffle)
-        elif type == "NoBatchNorm":
+        elif type_of_model == "NoBatchNorm":
             return "_without_bn_hwcr_cnn_lr_" + str(lr) + \
                    "_batch_size_" + str(batch_size) + "shuffle_" + str(shuffle)
-        elif type == "Dropout":
+        elif type_of_model == "Dropout":
             return "_with_bn_do_hwcr_cnn_lr_" + str(lr) + \
                    "_batch_size_" + str(batch_size) + "shuffle_" + str(shuffle)
 
     @staticmethod
-    def __get_tb_summary_title(type):
-        if type == "BatchNorm":
+    def __get_tb_summary_title(type_of_model):
+        if type_of_model == "BatchNorm":
             return "With-Batch_Normalization-"
-        elif type == "NoBatchNorm":
+        elif type_of_model == "NoBatchNorm":
             return "Without-Batch_Normalization-"
-        elif type == "Dropout":
+        elif type_of_model == "Dropout":
             return "WithDropout_BN-"

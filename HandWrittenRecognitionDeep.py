@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn import metrics
 
 from HWCRUtils import HWCRUtils
 from Test import Test_Manager
@@ -10,7 +11,8 @@ class HandWrittenRecognitionDeep:
     @staticmethod
     def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device):
         # train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
-        custom_data_set, custom_labels_set = HWCRUtils.read_dataset("./output_40000/data.npy", "./output_40000/labels.npy", image_dims)
+        custom_data_set, custom_labels_set = HWCRUtils.read_dataset("./output_40000/data.npy",
+                                                                    "./output_40000/labels.npy", image_dims)
         train_data_set1, labels_set1 = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
         train_data_set = np.concatenate((train_data_set1, custom_data_set), axis=0)
         labels_set = np.concatenate((labels_set1, custom_labels_set), axis=0)
@@ -27,29 +29,36 @@ class HandWrittenRecognitionDeep:
         return X_train, Y_train, train_set, test_set, val_set, Y_val.shape[0], Y_val.shape[0], Y_test.shape[0]
 
     @staticmethod
-    def train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, epochs=10):
+    def train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, type, epochs=10,
+                    show_plot=False):
         train = Train_Manager()
-        response = train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
-                                        epochs)
-        return {
-            "network_bn": response["network_bn"],
-            "network_no_bn": response["network_no_bn"],
-            "network_bn_dropout": response["network_bn_dropout"]
-        }
+        return train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
+                                    epochs, type, show_plot)
 
-    def test_model(self, network, validation_set, validation_size, classes, run, type_of_bn):
+    def test_model(self, network, data_set, data_set_size, classes, run, type_of_bn,
+                   device, show_confusion_matrix=False):
         test = Test_Manager()
-        ret = test.test_data_set(validation_set, network, run)
-        percent_correct = (ret['total_correct'] / validation_size) * 100
+        ret = test.test_data_set(data_set, network, run)
+        percent_correct = (ret['total_correct'] / data_set_size) * 100
         confusion_matrix = ret['confusion_matrix']
         print(f"#### {type_of_bn} #####")
         print(f"total loss test: {ret['total_loss']}")
         print(f"correctly predicted: {ret['total_correct']}")
-        print(f"actual correct: {validation_size}")
+        print(f"actual correct: {data_set_size}")
         print(f"% correct: {percent_correct}")
         self.__show_accuracy_class(confusion_matrix, classes)
-        self.__plot_confusion_matrix(confusion_matrix=confusion_matrix, classes=classes)
-        self.__print_confusion_matrix(confusion_matrix, classes)
+
+        if show_confusion_matrix:
+            self.__plot_confusion_matrix(confusion_matrix=confusion_matrix, classes=classes)
+            self.__print_confusion_matrix(confusion_matrix, classes)
+            actuals, class_probabilities = test.test_class_probabilities(network, device, data_set,
+                                                                         run.batch_size, which_class=8)
+            # self.__plotROC_curve(actuals, class_probabilities, which_class=8)
+
+        return {
+            "loss": ret['total_loss'],
+            "accuracy": percent_correct
+        }
 
     @staticmethod
     def __show_accuracy_class(confusion_matrix, classes):
@@ -84,3 +93,27 @@ class HandWrittenRecognitionDeep:
             for idx, p in enumerate(r):
                 print(str(p).ljust(10), end='')
             print()
+
+    @staticmethod
+    def plot_accuracy_run(bn_accuracy, title):
+        plt.plot(bn_accuracy)
+        plt.ylabel("Accuracy")
+        plt.xlabel("Run")
+        plt.title(title)
+        plt.show()
+
+    def __plotROC_curve(actuals, class_probabilities, which_class):
+        fpr, tpr, _ = metrics.roc_curve(actuals, class_probabilities)
+        roc_auc = metrics.auc(fpr, tpr)
+        plt.figure()
+        lw = 2
+        plt.plot(fpr, tpr, color='darkorange',
+                 lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+        plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('ROC for digit=%d class' % which_class)
+        plt.legend(loc="lower right")
+        plt.show()

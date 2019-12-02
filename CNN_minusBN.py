@@ -23,7 +23,11 @@ class Network(nn.Module):
 
     def forward(self, t):
         # 1st conv layer
-        t = t.float().cuda()
+        if torch.cuda.is_available():
+            t = t.float().cuda()
+        else:
+            t = t.float()
+
         t = self.conv1(t)
         t = F.relu(t)
         t = F.max_pool2d(t, kernel_size=2, stride=2)

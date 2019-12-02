@@ -27,7 +27,11 @@ class Network(nn.Module):
 
     def forward(self, t):
         # 1st conv layer
-        t = t.float().cuda()
+        if torch.cuda.is_available():
+            t = t.float().cuda()
+        else:
+            t = t.float()
+
         t = self.conv1(t)
         t = self.bn1(t)
         t = F.relu(t)

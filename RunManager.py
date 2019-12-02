@@ -100,4 +100,3 @@ class RunManager:
 
     def get_final_correct(self):
         return self.epoch_id_total_correct
-0
