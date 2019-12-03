@@ -1,0 +1,24 @@
+[
+    {
+        "run": 1,
+        "epoch": 1,
+        "loss": 0.9580915368416093,
+        "accuracy": 0.5812121212121212,
+        "epoch_duration": 10.373236894607544,
+        "run_duration": 20.95596432685852,
+        "lr": 0.001,
+        "batch_size": 90,
+        "shuffle": false
+    },
+    {
+        "run": 1,
+        "epoch": 2,
+        "loss": 0.4785041686486114,
+        "accuracy": 0.7551515151515151,
+        "epoch_duration": 10.293475151062012,
+        "run_duration": 31.995445013046265,
+        "lr": 0.001,
+        "batch_size": 90,
+        "shuffle": false
+    }
+]
