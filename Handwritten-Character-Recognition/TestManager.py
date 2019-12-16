@@ -66,7 +66,7 @@ class Test_Manager:
         confusion_matrix = np.zeros([len(classes)+1, len(classes)+1], int)
         # set batch size
         data_loader = torch.utils.data.DataLoader(
-            test_set, num_workers=1, shuffle=False, pin_memory=True
+            test_set, num_workers=0, shuffle=False, pin_memory=True
         )
 
         # set optimizer - Adam
