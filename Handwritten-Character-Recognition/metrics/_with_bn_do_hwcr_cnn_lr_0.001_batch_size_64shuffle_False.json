@@ -2,10 +2,10 @@
     {
         "run": 1,
         "epoch": 1,
-        "loss": 0.5930438173219974,
-        "accuracy": 0.8229786157155511,
-        "epoch_duration": 471.1467001438141,
-        "run_duration": 474.3076491355896,
+        "loss": 0.3161378166892312,
+        "accuracy": 0.8866666666666667,
+        "epoch_duration": 66.21070075035095,
+        "run_duration": 69.67545795440674,
         "lr": 0.001,
         "batch_size": 64,
         "shuffle": false

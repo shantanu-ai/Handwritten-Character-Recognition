@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn import metrics
+from sklearn.model_selection import cross_val_score
+from skorch import NeuralNetClassifier
 
 from HWCRUtils import HWCRUtils
 from TestManager import Test_Manager
@@ -9,6 +11,20 @@ from TrainManager import Train_Manager
 
 
 class HandWrittenRecognitionDeep:
+
+    def train_model(self, run, cv_set, train_set, model_directory_path, model_paths, save_logistics_file_path,
+                    type, cv, epochs=10, show_plot=False):
+        train = Train_Manager()
+
+        model = train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
+                                     epochs, type, show_plot)
+        X_train = cv_set[0]
+        Y_train = cv_set[1]
+        self.__perform_CV(model, X_train, Y_train, cv,
+                          run, epochs, type)
+
+        return model
+
     @staticmethod
     def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device, flag):
         # train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
@@ -45,13 +61,6 @@ class HandWrittenRecognitionDeep:
         processed_dataset = torch.utils.data.TensorDataset(tensor_x)
         return processed_dataset
 
-    @staticmethod
-    def train_model(run, train_set, model_directory_path, model_paths, save_logistics_file_path, type, epochs=10,
-                    show_plot=False):
-        train = Train_Manager()
-        return train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
-                                    epochs, type, show_plot)
-
     def test_model(self, network, data_set, data_set_size, classes, run, type_of_bn,
                    device, show_confusion_matrix=False):
         test = Test_Manager()
@@ -59,7 +68,7 @@ class HandWrittenRecognitionDeep:
         unknown_count = ret['unknown_count']
         # percent_correct = (ret['total_correct'] / (data_set_size - unknown_count)) * 100
         percent_correct = (ret['total_correct'] / data_set_size) * 100
-        confusion_matrix = ret['confusion_matrix'][1:len(classes)+1, 1:len(classes)+1]
+        confusion_matrix = ret['confusion_matrix'][1:len(classes) + 1, 1:len(classes) + 1]
         print(f"#### {type_of_bn} #####")
         print(f"total loss test: {ret['total_loss']}")
         print(f"unknown_count: {unknown_count}")
@@ -143,3 +152,13 @@ class HandWrittenRecognitionDeep:
         plt.title('ROC for character=%d class' % which_class)
         plt.legend(loc="lower right")
         plt.show()
+
+    @staticmethod
+    def __perform_CV(model, X_train, Y_train, cv, run, epochs, type_of_model):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        logistics = NeuralNetClassifier(model, max_epochs=epochs, lr=run.lr, device=device)
+        scores = cross_val_score(logistics, X_train, Y_train, cv=cv, scoring="accuracy")
+        print(f'CV score with type {type_of_model}')
+        print(f'run: {run} | score: {scores.mean()}')
+
+        return scores.mean()
