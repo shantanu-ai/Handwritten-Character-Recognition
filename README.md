@@ -34,7 +34,7 @@ We first split the dataset into train, test and validation set. Then we used dif
 # Easy Dataset
   # Training
 <b>Training “easy” blind data set</b>
-1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train.py</b> file.
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>./Handwritten-Character-Recognition/train.py</b> file.
 2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
 3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
 4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
@@ -42,13 +42,13 @@ We first split the dataset into train, test and validation set. Then we used dif
 
 # Testing
 <b>Testing “easy” blind data set</b>
-1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test.py</b> file.
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>./Handwritten-Character-Recognition/test.py</b> file.
 2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
   
 # Hard Dataset 
  # Training
 <b>Training Hard Dataset</b>
-1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train_extra_credit.py</b> file.
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>./Handwritten-Character-Recognition/train_extra_credit.py</b> file.
 2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
 3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
 4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
@@ -56,7 +56,7 @@ We first split the dataset into train, test and validation set. Then we used dif
 
 # Testing
 <b>Testing Hard Dataset</b>
-1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test_extra_credit.py</b> file.
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>./Handwritten-Character-Recognition/test_extra_credit.py</b> file.
 2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
   
 # Caution
@@ -65,12 +65,14 @@ We first split the dataset into train, test and validation set. Then we used dif
 # How to run 
 # Easy Dataset
 1. <b>Training:</b> <br/>
+cd Handwritten-Character-Recognition
 <b>python train.py</b>
 2. <b>Testing:</b> <br/>
 <b>python test.py</b>
   
 # Hard Dataset
 1. <b>Training:</b> <br/>
+cd Handwritten-Character-Recognition
 <b>python train_extra_credit.py</b>
 2. <b>Testing:</b> <br/>
 <b>python test_extra_credit.py</b>
