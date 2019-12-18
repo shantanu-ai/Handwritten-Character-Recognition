@@ -1,11 +1,11 @@
 # Overview
-This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep Convolution Network inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.</b>
+This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep convolutional neural network  inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.</b>
 
 # Requirement
 The detailed requirement of this project will be found out in the file <b>project1.pdf</b>
 
 # DataSet
-The Dataset is custom handwritten charecters provided by Prof Alina Zare of Electrical and Computer Engineering Department of the University of Florida.
+The Dataset is custom handwritten charecters provided by Prof Alina Zare created by her students of Electrical and Computer Engineering Department of the University of Florida. 
 
 # Easy DataSet
 The “easy” test set is composed of hand-written ‘a’ and ‘b’ characters. The  code should produce the labels ’1’ for ’a’ and ’2’ for ’b’
