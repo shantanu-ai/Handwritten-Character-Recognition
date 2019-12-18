@@ -1,6 +1,9 @@
 # Overview
 This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep Convolution Network inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.</b>
 
+# Requirement
+The detailed requirement of this project will be found out in the file <b>project1.pdf</b>
+
 # DataSet
 The Dataset is custom handwritten charecters provided by Prof Alina Zare of Electrical and Computer Engineering Department of the University of Florida.
 
@@ -21,7 +24,6 @@ We first split the dataset into train, test and validation set. Then we used dif
 
 # Parameters of the Convolution Network
 <img src="https://github.com/Shantanu48114860/Handwritten-Character-Recognition/blob/master/Parameters.png" width="500" height="500">
-
 
 # Easy Dataset
   # Training
@@ -70,4 +72,7 @@ For <b>(Extra Credit)</b>
   
 # Project report
 Project report is included in the <b>FML_final.pdf </b>
+
+# Final Result on real test data
+As per the teaching assistants, when they ran the model on the test data set, the model produces an accuracy of 97.3% and 86.5% on the easy and hard dataset respectively.
 
