@@ -1,5 +1,5 @@
 # Overview
-This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. An implentation of Deep Convolution Network inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.
+This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep Convolution Network inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.</b>
 
 # DataSet
 The Dataset is custom handwritten charecters provided by Prof Alina Zare of Electrical and Computer Engineering Department of the University of Florida.
@@ -20,31 +20,32 @@ We came up with three types of models -
 We first split the dataset into train, test and validation set. Then we used different parameters(learning rates, epochs, batch sizes) to train our network and based on the results we found out the model without batch normalization produces highest accuracy(<b>97.469%</b>). So we selected that model as our final deliverable model.
 
 # Parameters of the Convolution Network
-<img src="https://github.com/Shantanu48114860/Handwritten-Character-Recognition/blob/master/Parameters.png" width="250" height="300">
+<img src="https://github.com/Shantanu48114860/Handwritten-Character-Recognition/blob/master/Parameters.png" width="500" height="500">
 
 
-# Parameters:
-  <b>Training “easy” blind test data set</b>
-  1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train.py</b> file.
-  2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
-  3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
-  4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
-  5. All the details of the models during training process will be genrated in the ./Handwritten-Character-Recognition/metrics folder.
+# Easy Dataset:
+  # Training
+<b>Training “easy” blind test data set</b>
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train.py</b> file.
+2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
+3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
+4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
+5. All the details of the models during training process will be genrated in the ./Handwritten-Character-Recognition/metrics folder.
   
-  <b>Testing “easy” blind test data set</b>
-  1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test.py</b> file.
-  2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
+<b>Testing “easy” blind test data set</b>
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test.py</b> file.
+2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
   
-  <b>Training Extra Credit</b>
-  1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train_extra_credit.py</b> file.
-  2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
-  3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
-  4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
-  5. All the details of the models during training process will be genrated in the ./Handwritten-Character-Recognition/metrics folder.
+<b>Training Extra Credit</b>
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>train_extra_credit.py</b> file.
+2. For specifying the paths for the files of the dataset and label set, please use the variables data_set_path and            label_set_path.
+3. Please place the the files of the dataset and label set in the Handwritten-Character-Recognition folder.
+4. The model will be generated in the ./Handwritten-Character-Recognition/model folder.
+5. All the details of the models during training process will be genrated in the ./Handwritten-Character-Recognition/metrics folder.
   
-  <b>Testing Extra Credit</b>
-  1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test_extra_credit.py</b> file.
-  2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
+<b>Testing Extra Credit</b>
+1. For <b>(“easy” blind test data set)</b> all the parameters(ex epoch, learning rate) are listed in <b>test_extra_credit.py</b> file.
+2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
   
 # Caution
   To generate the model please run train.py and train_extra_credit.py file first.
