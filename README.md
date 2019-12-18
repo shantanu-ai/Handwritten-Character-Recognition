@@ -60,7 +60,7 @@ We first split the dataset into train, test and validation set. Then we used dif
 2. For specifying the paths for the files of the dataset, please use the variables data_set_path variable.
   
 # Caution
-  To generate the model please run train.py and train_extra_credit.py file first.
+  To generate a new model with new parameters, please run train.py and train_extra_credit.py file first. Existing models are found at the location <b>Handwritten-Character-Recognition/model</b>
   
 # How to run 
 # Easy Dataset
