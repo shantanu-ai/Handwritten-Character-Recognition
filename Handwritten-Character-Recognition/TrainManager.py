@@ -16,11 +16,28 @@ torch.set_grad_enabled(True)
 
 
 class Train_Manager:
+    """
+    This class trains the cnn model.
+    """
     def __init__(self):
         self.model = None
 
     def train_data_set(self, train_set, run, model_directory_path, model_path, save_logistics_file_path,
                        epochs, type_of_model, show_plot):
+        """
+        This method trains the data set.
+
+        :param train_set: training data set
+        :param run: run parameters
+        :param model_directory_path: path of the directory in the disk where the model resides
+        :param model_path: path of the model in the disk
+        :param save_logistics_file_path: logistics path where details about model will be saved
+        :param epochs:
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+        :param show_plot:
+
+        :return: trained cnn model
+        """
         model_updated = None
 
         if not os.path.exists(model_directory_path):
@@ -48,6 +65,20 @@ class Train_Manager:
 
     def __load_model(self, model, train_set, run, model_path_no_bn, save_logistics_file_path, epochs,
                      type_of_model, show_plot):
+        """
+        Loads the model either from the disk if the model exists in the disk or trains the new model.
+        and saves it in the disk
+        :param model: cnn model
+        :param train_set: training data set
+        :param run: run parameters
+        :param model_path_no_bn: path of the model in the disk
+        :param save_logistics_file_path: logistics path where details about model will be saved
+        :param epochs:
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+        :param show_plot:
+
+        :return: the cnn model
+        """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         if os.path.isfile(model_path_no_bn):
             # load trained model parameters from disk
@@ -63,6 +94,19 @@ class Train_Manager:
         return model
 
     def __train_network(self, model, train_set, run, save_logistics_file_path, epochs, type_of_model, show_plot):
+        """
+        Trains the cnn model if the model does not exist in the disk and also saves in the disk.
+
+        :param model: cnn model
+        :param train_set: training data set
+        :param run: run parameters
+        :param save_logistics_file_path: logistics path where details about model will be saved
+        :param epochs:
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+        :param show_plot:
+
+        :return: trained cnn model
+        """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print("-------------------------------------------------------------------", device)
         loss_val = []
@@ -131,6 +175,14 @@ class Train_Manager:
 
     @staticmethod
     def plot_loss_val(bn_loss, run):
+        """
+        Plots the graph based on the loss vs run parameter
+
+        :param bn_loss: loss
+        :param run:
+
+        :return: none
+        """
         plt.plot(bn_loss)
         plt.title(f'Fig: {run} Loss vs Epoch')
         plt.ylabel('Loss')
@@ -139,6 +191,14 @@ class Train_Manager:
 
     @staticmethod
     def plot_accuracy_val(bn_acc, run):
+        """
+        Plots the accuracy graph based on the training accuracy score vs run parameter
+
+        :param bn_acc:
+        :param run:
+
+        :return: none
+        """
         plt.plot(bn_acc)
         plt.title(f'Fig: {run} Accuracy vs Epoch')
         plt.ylabel('Accuracy')
@@ -146,6 +206,13 @@ class Train_Manager:
         plt.show()
 
     def __getModel(self, type_of_model):
+        """
+        Initializes the cnn model based on the type
+
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+
+        :return: initialized model
+        """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         if type_of_model == "BatchNorm":
             return CNN_bn().to(device=device)
@@ -156,6 +223,16 @@ class Train_Manager:
 
     @staticmethod
     def __get_file_name(type_of_model, shuffle, lr, batch_size):
+        """
+        Gets the file name of the model if it exits in the disk
+
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+        :param shuffle:
+        :param lr: learning rate
+        :param batch_size: size of each batch
+
+        :return: name of the file name of the model
+        """
         if type_of_model == "BatchNorm":
             return "_with_bn_hwcr_cnn_lr_" + str(lr) + \
                    "_batch_size_" + str(batch_size) + "shuffle_" + str(shuffle)
@@ -168,6 +245,13 @@ class Train_Manager:
 
     @staticmethod
     def __get_tb_summary_title(type_of_model):
+        """
+        Gets the summary file name
+
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+
+        :return: the summary file name
+        """
         if type_of_model == "BatchNorm":
             return "With-Batch_Normalization-"
         elif type_of_model == "NoBatchNorm":

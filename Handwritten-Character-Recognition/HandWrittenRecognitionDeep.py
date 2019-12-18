@@ -11,9 +11,35 @@ from TrainManager import Train_Manager
 
 
 class HandWrittenRecognitionDeep:
+    """
+    This class acts as a container which invokes methods that ->
+        1. train models
+        2. test models
+        3. split the dataset to train, test and validation set
+        4. perform cross validation
+        5. plot confusion matrix
+        6. plot the curves based on the different parameters
+    """
 
     def train_model(self, run, cv_set, train_set, model_directory_path, model_paths, save_logistics_file_path,
                     type, cv, epochs=10, show_plot=False):
+        """
+        This method trains the model based on the parameters and returns the trained model.
+
+        :param run: run parameters
+        :param cv_set: cross validation data set
+        :param train_set: training set
+        :param model_directory_path: path in the disk where pre-trained model exists if any
+        :param model_paths: path in the disk where trained model will be saved.
+        :param save_logistics_file_path: logistics path where details about model will be saved
+        :param type: type of model
+        :param cv: cross validation size
+        :param epochs:
+        :param show_plot:
+
+        :return model: pytorch model
+
+        """
         train = Train_Manager()
 
         model = train.train_data_set(train_set, run, model_directory_path, model_paths, save_logistics_file_path,
@@ -27,6 +53,19 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def split_train_test_validation_set(data_set_path, label_set_path, image_dims, split_size, device, flag):
+        """
+        This method splits the data set into train, test and validation set. Also this method resize the images
+        based on image dimensions specified by image_dims parameter.
+
+        :param data_set_path:
+        :param label_set_path:
+        :param image_dims:
+        :param split_size:
+        :param device:
+        :param flag:
+
+        :return train, test and validation set and their corresponding sizes
+        """
         # train_data_set, labels_set = HWCRUtils.read_dataset(data_set_path, label_set_path, image_dims)
         custom_data_set, custom_labels_set = HWCRUtils.read_dataset("./output_40000/data.npy",
                                                                     "./output_40000/labels.npy", image_dims)
@@ -56,6 +95,14 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def pre_process_test(data_set_path, device):
+        """
+        This method converts the numpy array to tensors.
+
+        :param data_set_path:
+        :param device:
+
+        :return: tensor
+        """
         train_data_set1 = HWCRUtils.read_dataset_test(data_set_path)
         tensor_x = torch.stack([torch.Tensor(i) for i in train_data_set1])
         processed_dataset = torch.utils.data.TensorDataset(tensor_x)
@@ -63,6 +110,21 @@ class HandWrittenRecognitionDeep:
 
     def test_model(self, network, data_set, data_set_size, classes, run, type_of_bn,
                    device, show_confusion_matrix=False):
+        """
+        This method tests the model based on validation set and prints the accuracy score
+        of the model. It also prints the confusion matrix if the user wants to.
+
+        :param network: cnn model
+        :param data_set: validation data set
+        :param data_set_size: test data set size
+        :param classes: labels of the dataset
+        :param run: run parameters
+        :param type_of_bn: type of the cnn model
+        :param device: device - either cpu or gpu
+        :param show_confusion_matrix:
+
+        :return dictionary: a dictionary with loss and accuracy of the model
+        """
         test = Test_Manager()
         ret = test.test_data_set(data_set, network, run, classes)
         unknown_count = ret['unknown_count']
@@ -91,17 +153,39 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def test_model_final(test_data_set, model_path_bn):
+        """
+        Test the model based on the real test dataset
+        :param test_data_set: test data set
+        :param model_path_bn: path of the model in the disk
+
+        :return predicted_labels: numpy array with the predicted labels
+        """
         test = Test_Manager()
         return test.test_model(test_data_set, model_path_bn)
 
     @staticmethod
     def __show_accuracy_class(confusion_matrix, classes):
+        """
+        Shows the accuracy of the each true labels based on the confusion matrix.
+        :param confusion_matrix:
+        :param classes: true labels
+
+        :return: none
+        """
         print('{0} - {1}'.format('Category', 'Accuracy'))
         for i, r in enumerate(confusion_matrix):
             print('{0} - {1}'.format(classes[i], r[i] / np.sum(r) * 100))
 
     @staticmethod
     def __plot_confusion_matrix(confusion_matrix, classes):
+        """
+        Plots the confusion matrix.
+
+        :param confusion_matrix:
+        :param classes: true labels
+
+        :return: none
+        """
         fig, ax = plt.subplots(1, 1, figsize=(8, 6))
         ax.matshow(confusion_matrix, aspect='auto', vmin=0, vmax=5, cmap=plt.get_cmap('Blues'))
         plt.ylabel('Actual Category')
@@ -112,6 +196,14 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def __print_confusion_matrix(confusion_matrix, classes):
+        """
+        Prints the confusion matrix in the console
+
+        :param confusion_matrix:
+        :param classes: true labels
+
+        :return: none
+        """
         print('actual/pred'.ljust(16), end='')
         for i, c in enumerate(classes):
             print(str(c).ljust(10), end='')
@@ -130,6 +222,14 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def plot_accuracy_run(bn_accuracy, title):
+        """
+        Plots the curve based on accuracy and run data
+
+        :param bn_accuracy: accuracy of the model
+        :param title: title of the plot
+
+        :return: none
+        """
         plt.plot(bn_accuracy)
         plt.ylabel("Accuracy")
         plt.xlabel("Run")
@@ -138,6 +238,15 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def __plotROC_curve(actual, class_probabilities, which_class):
+        """
+        Plots the ROC curve of a particular label
+
+        :param actual: true label
+        :param class_probabilities:
+        :param which_class: class
+
+        :return: none
+        """
         fpr, tpr, _ = metrics.roc_curve(actual, class_probabilities)
         roc_auc = metrics.auc(fpr, tpr)
         plt.figure()
@@ -155,6 +264,19 @@ class HandWrittenRecognitionDeep:
 
     @staticmethod
     def __perform_CV(model, X_train, Y_train, cv, run, epochs, type_of_model):
+        """
+        Performs the k fold cross validation based on the training data using skorch library.
+
+        :param model: cnn model
+        :param X_train: training data set
+        :param Y_train: true class labels
+        :param cv: no of folds
+        :param run: run parameter
+        :param epochs:
+        :param type_of_model: whether {batch normalization, no batch normalization or dropout}
+
+        :return: cross validation score
+        """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         logistics = NeuralNetClassifier(model, max_epochs=epochs, lr=run.lr, device=device)
         scores = cross_val_score(logistics, X_train, Y_train, cv=cv, scoring="accuracy")

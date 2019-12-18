@@ -10,7 +10,13 @@ from HWCRUtils import HWCRUtils
 
 
 class RunManager:
+    """
+    This class creates manages different parameters based on each run.
+    """
     def __init__(self):
+        """
+        Initialized each parameters of each run.
+        """
         self.epoch_id = 0
         self.epoch_loss = 0
         self.epoch_id_total_correct = 0
@@ -30,6 +36,17 @@ class RunManager:
         self.accuracy = None
 
     def begin_run(self, run, network, loader, device, type_of_bn):
+        """
+        Records all the parameters at the start of each run.
+
+        :param run:
+        :param network: cnn model
+        :param loader: pytorch data loader
+        :param device: {cpu or gpu}
+        :param type_of_bn: whether {batch normalization, no batch normalization or dropout}
+
+        :return: none
+        """
         self.run_start_time = time.time()
 
         self.run_id += 1
@@ -45,10 +62,20 @@ class RunManager:
         self.tb.add_graph(network, images)
 
     def end_run(self):
+        """
+        Records all the parameters at the end of each run.
+
+        :return: none
+        """
         self.tb.close()
         self.epoch_id = 0
 
     def begin_epoch(self):
+        """
+        Records all the parameters at the start of each epoch.
+
+        :return: none
+        """
         self.epoch_start_time = time.time()
 
         self.epoch_id += 1
@@ -57,6 +84,11 @@ class RunManager:
         self.epoch_id_total_correct = 0
 
     def end_epoch(self):
+        """
+        Records all the parameters at the end of each epoch.
+
+        :return: none
+        """
         epoch_duration = time.time() - self.epoch_start_time
         run_duration = time.time() - self.run_start_time
 
@@ -86,12 +118,34 @@ class RunManager:
         print(df)
 
     def track_loss(self, loss):
+        """
+        Calculates the loss at the each iteration of batch.
+
+        :param loss:
+
+        :return: calculated loss
+        """
         self.epoch_loss += loss.item() * self.loader.batch_size
 
     def track_total_correct_per_epoch(self, preds, labels):
+        """
+        Calculates the correct prediction at the each iteration of batch.
+
+        :param preds: predicted labels
+        :param labels: true labels
+
+        :return: the totalcorrect prediction at the each iteration of batch
+        """
         self.epoch_id_total_correct += HWCRUtils.get_num_correct(preds, labels)
 
     def save(self, fileName):
+        """
+        Saves the different parameters in a csv file.
+
+        :param fileName:
+
+        :return: none
+        """
         pd.DataFrame.from_dict(
             self.run_data,
             orient='columns'
@@ -101,10 +155,25 @@ class RunManager:
             json.dump(self.run_data, f, ensure_ascii=False, indent=4)
 
     def get_final_loss_val(self):
+        """
+        Gets the final loss value.
+
+        :return: the final loss value
+        """
         return self.loss
 
     def get_final_accuracy(self):
+        """
+        Gets the final accuracy value.
+
+        :return: the final accuracy value
+        """
         return self.accuracy
 
     def get_final_correct(self):
+        """
+        Gets the final correctly predicted value.
+
+        :return: the final correctly predicted value
+        """
         return self.epoch_id_total_correct

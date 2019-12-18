@@ -9,6 +9,20 @@ from HandWrittenRecognitionDeep import HandWrittenRecognitionDeep
 def final_test_train(train_set, test_set, run,
                      model_directory_path, save_logistics_file_path, hwRD, epochs,
                      test_set_size, classes):
+    """
+    Trains using final set
+
+    :param train_set:
+    :param test_set:
+    :param run:
+    :param model_directory_path:
+    :param save_logistics_file_path:
+    :param hwRD:
+    :param epochs:
+    :param test_set_size:
+    :param classes:
+    :return:
+    """
     model_path_bn = model_directory_path + "_ab_no_bn_hwcr_cnn_lr" + str(run.lr) + \
                     "_batch_size_" + str(run.batch_size) + \
                     "shuffle_" + str(run.shuffle) + ".pt"
@@ -21,6 +35,12 @@ def final_test_train(train_set, test_set, run,
 
 
 def test_with_diff_params():
+    """
+    This method tests with different parameters to choose which type of model among {}
+    works the best.
+
+    :return: none
+    """
     final_parameters = OrderedDict(
         lr=[0.01, 0.001],
         batch_size=[64, 128],

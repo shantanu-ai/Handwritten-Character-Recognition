@@ -5,6 +5,12 @@ from HandWrittenRecognitionDeep import HandWrittenRecognitionDeep
 
 
 def test_with_diff_params(device):
+    """
+    This method tests with real life data.(the hard dataset to detect all the 8 labels)
+    :param device: {cpu and gpu}
+
+    :return: the numpy array with all the predicted labels ’a’, ’b’,’c’,’d’,’h’, ’i’, ’j’ and ’k’
+    """
     data_set_path = "HardData.pkl"
     hwRD = HandWrittenRecognitionDeep()
 

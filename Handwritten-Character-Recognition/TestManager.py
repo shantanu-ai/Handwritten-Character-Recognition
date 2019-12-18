@@ -12,11 +12,22 @@ torch.set_grad_enabled(True)
 
 
 class Test_Manager:
+    """
+    This class tests the cnn model
+    """
     def __init__(self):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = CNN_no_bn().to(device=device)
 
     def test_model(self, test_data_set, model_path):
+        """
+         This method tests the data set.
+
+        :param test_data_set: test data set
+        :param model_path: path of the model
+
+        :return predicted_labels: the numpy array of the predicted labels
+        """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         if os.path.isfile(model_path):
@@ -30,15 +41,19 @@ class Test_Manager:
             return
 
     def test_data_set_final(self, test_data_set):
-        # set batch size
+        """
+        Tests the data set based on real data set and returns
+        the numpy array of the predicted labels.
+
+        :param test_data_set: test data set
+
+        :return predicted_labels: the numpy array of the predicted labels:
+        """
+
         data_loader = torch.utils.data.DataLoader(
             test_data_set, num_workers=1, shuffle=False, pin_memory=True
         )
-
-        # set optimizer - Adam
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-        # start training
         output = []
         idx = 1
 
@@ -63,6 +78,16 @@ class Test_Manager:
         return output
 
     def test_data_set(self, test_set, network, run, classes):
+        """
+        Tests the model based on the validation set.
+
+        :param test_set: validation data set
+        :param network: cnn model whether {batch normalization, no batch normalization or dropout}
+        :param run: run parameters
+        :param classes: true labels
+
+        :return: a python dictionary with all the metric of the model
+        """
         confusion_matrix = np.zeros([len(classes)+1, len(classes)+1], int)
         # set batch size
         data_loader = torch.utils.data.DataLoader(
@@ -118,6 +143,17 @@ class Test_Manager:
         }
 
     def test_class_probabilities(self, model, device, test_set, batch_size, which_class):
+        """
+        Calculates the probability of a particular class required to plot the ROC Curve
+
+        :param model: cnn model
+        :param device: whether {cpu or gpu}
+        :param test_set:
+        :param batch_size:
+        :param which_class:
+
+        :return: the probability
+        """
         model.eval()
         actuals = []
         data_loader = torch.utils.data.DataLoader(

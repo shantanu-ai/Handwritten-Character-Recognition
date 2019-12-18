@@ -9,16 +9,44 @@ from DAL import DAL
 
 
 class HWCRUtils:
+    """
+    This is a class with all utility methods.
+    """
     @staticmethod
     def numpy_load(path, allow_pickle=False):
+        """
+        Loads data set.
+
+        :param path: data set path
+        :param allow_pickle:
+
+        :return: the data set as numpy array
+        """
         return np.load(path, allow_pickle=allow_pickle)
 
     @staticmethod
     def get_num_correct(preds, labels):
+        """
+        Calculates the number of the correct prediction.
+
+        :param preds: predicted labels
+        :param labels: true labels
+
+        :return: total number of correctly predicted labels
+        """
         return preds.argmax(dim=1).eq(labels).sum().item()
 
     @staticmethod
     def spilt_data_set(data_set, label_set, split_size):
+        """
+        Splits the data set into test and train set.
+
+        :param data_set: dataset
+        :param label_set: true labels
+        :param split_size: split percentage
+
+        :return: train and test dataset and corresponding labels
+        """
         X_train, X_test, Y_train, Y_test = \
             sklearn.train_test_split(data_set, label_set, test_size=split_size, stratify=label_set)
 
@@ -26,6 +54,15 @@ class HWCRUtils:
 
     @staticmethod
     def convert_to_tensor(X, Y, device):
+        """
+        Converts the dataset to tensor.
+
+        :param X: dataset
+        :param Y: label
+        :param device: whether {cpu or gpu}
+
+        :return: the dataset as tensor
+        """
         tensor_x = torch.stack([torch.Tensor(i) for i in X])
         tensor_y = torch.from_numpy(Y)
         processed_dataset = torch.utils.data.TensorDataset(tensor_x, tensor_y)
@@ -33,6 +70,15 @@ class HWCRUtils:
 
     @staticmethod
     def read_dataset(data_set_path, label_set_path, image_dims):
+        """
+        Reads the dataset.
+
+        :param data_set_path:
+        :param label_set_path:
+        :param image_dims:
+
+        :return: dataset
+        """
         dal = DAL()
         dal.read_data(data_set_path, label_set_path)
         train_data_set, labels_set = dal.pre_process_data_set(image_dims)
@@ -40,6 +86,12 @@ class HWCRUtils:
 
     @staticmethod
     def read_dataset_test(data_set_path):
+        """
+        Reads the test set.
+        :param data_set_path:
+
+        :return: test set
+        """
         dal = DAL()
         dal.read_data_test(data_set_path)
         data_set = dal.pre_process_data_set_test(64)
@@ -47,6 +99,13 @@ class HWCRUtils:
 
     @staticmethod
     def get_runs(params):
+        """
+        Gets the run parameters using cartesian products of the different parameters.
+
+        :param params: different parameters like batch size, learning rates
+
+        :return: iterable run set
+        """
         Run = namedtuple("Run", params.keys())
 
         runs = []
@@ -57,6 +116,14 @@ class HWCRUtils:
 
     @staticmethod
     def resize_padded(image, new_shape):
+        """
+        Resize each image of the data set to the dimension of 64 X 64 using padding.
+
+        :param image: image in the data set
+        :param new_shape: 64 X 64
+
+        :return:  64 X 64 image
+        """
         img = torch.from_numpy(image)
         delta_width = new_shape - img.shape[1]
         delta_height = new_shape - img.shape[0]

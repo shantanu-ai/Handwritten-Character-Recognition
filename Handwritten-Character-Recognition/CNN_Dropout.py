@@ -7,6 +7,9 @@ torch.set_grad_enabled(True)
 
 
 class Network(nn.Module):
+    """
+    This class creates the Convolution neural network with Dropout.
+    """
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=128, kernel_size=5)
