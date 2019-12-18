@@ -77,6 +77,9 @@ cd Handwritten-Character-Recognition<br/>
 2. <b>Testing:</b> <br/>
 <b>python test_extra_credit.py</b>
   
+# Final Output
+The final output after running the ./Handwritten-Character-Recognition/test.py and ./Handwritten-Character-Recognition/test_extra_credit.py files will be found at the files easy_file.npy and hard_file.npy respectively. In these two files the predicted labels are stored as numpy arrays.
+
 # Project report
 Project report is included in the <b>FML_final.pdf </b>
 
