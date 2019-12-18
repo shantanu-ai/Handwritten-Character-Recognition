@@ -1,5 +1,27 @@
 # Overview
-A Deep CNN implementation with Pytorch to recognize Handwritten Characters
+This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. An implentation of Deep Convolution Network inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.
+
+# DataSet
+The Dataset is custom handwritten charecters provided by Prof Alina Zare of Electrical and Computer Engineering Department of the University of Florida.
+
+# Easy DataSet
+The “easy” test set is composed of hand-written ‘a’ and ‘b’ characters. The  code should produce the labels ’1’ for ’a’ and ’2’ for ’b’
+
+# Hard DataSet
+The goal is to train the system to distinguish between handwritten characters. The “hard” data set consists of the following characters: ’a’, ’b’,’c’,’d’,’h’, ’i’, ’j’ and ’k’ and ’unknown’. There will be test data points from classes that do not appear in the training data. So, the system have come up with a way to identify when a test point class is “unknown” or what not in the training data. The label you should return for this case is -1.
+The code outputs a class label that matches the class value in the provided training data. These should be: 1,2,3,4,5,6,7,8, and -1 respectively.
+
+# Models
+We came up with three types of models -
+1. with Batch Normalization
+2. without Batch Normalization
+3. with Dropout
+
+We first split the dataset into train, test and validation set. Then we used different parameters(learning rates, epochs, batch sizes) to train our network and based on the results we found out the model without batch normalization produces highest accuracy(<b>97.469%</b>). So we selected that model as our final deliverable model.
+
+# Parameters of the Convolution Network
+<img src="https://github.com/Shantanu48114860/Handwritten-Character-Recognition/blob/master/Parameters.png" width="250" height="300">
+
 
 # Parameters:
   <b>Training “easy” blind test data set</b>
