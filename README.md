@@ -60,11 +60,10 @@ We first split the dataset into train, test and validation set. Then we used dif
 # Easy Dataset
 1. <b>Training:</b> <br/>
 <b>python train.py</b>
-2. <b>Testing:<b> <br/>
+2. <b>Testing:</b> <br/>
 <b>python test.py</b>
   
 # Hard Dataset
-For <b>(Extra Credit)</b>
 1. <b>Training:</b> <br/>
 <b>python train_extra_credit.py</b>
 2. <b>Testing:</b> <br/>
