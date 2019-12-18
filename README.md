@@ -25,6 +25,12 @@ We first split the dataset into train, test and validation set. Then we used dif
 # Parameters of the Convolution Network
 <img src="https://github.com/Shantanu48114860/Handwritten-Character-Recognition/blob/master/Parameters.png" width="500" height="500">
 
+# Crossvalidation framework
+  skorch (<b>0.7</b>)
+ 
+# Pytorch version
+  <b>1.3.1</b>
+
 # Easy Dataset
   # Training
 <b>Training “easy” blind data set</b>
