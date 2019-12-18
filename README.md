@@ -67,12 +67,12 @@ We first split the dataset into train, test and validation set. Then we used dif
 For <b>(Extra Credit)</b>
 1. <b>Training:</b> <br/>
 <b>python train_extra_credit.py</b>
-2. <b>Testing:<b> <br/>
+2. <b>Testing:</b> <br/>
 <b>python test_extra_credit.py</b>
   
 # Project report
 Project report is included in the <b>FML_final.pdf </b>
 
 # Final Result on real test data
-As per the teaching assistants, when they ran the model on the test data set, the model produces an accuracy of 97.3% and 86.5% on the easy and hard dataset respectively.
+As per the teaching assistants, when they ran the model on the test data set, the model produces an accuracy of <b>97.3% and 86.5% on the easy and hard dataset </b> respectively.
 
