@@ -1,5 +1,5 @@
 # Overview
-This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep convolutional neural network  inspired by the famous "Lenet" Architecture with Pytorch to recognize Handwritten Characters.</b>
+This is repository is created as a part of final project for Fundamentals of Machine Learning (EEL5840) under Prof Alina Zare in University of Florida for the Master's in Computer Science program. <b>An implentation of Deep convolutional neural network  inspired by the famous "Lenet"(http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf) Architecture with Pytorch to recognize Handwritten Characters.</b>
 
 # Requirement
 The detailed requirement of this project will be found out in the file <b>project1.pdf</b>
