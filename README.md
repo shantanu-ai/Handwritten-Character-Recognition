@@ -16,9 +16,9 @@ The code outputs a class label that matches the class value in the provided trai
 
 # Models
 We came up with three types of models -
-1. with Batch Normalization
+1. with Batch Normalization (https://arxiv.org/pdf/1502.03167.pdf)
 2. without Batch Normalization
-3. with Dropout
+3. with Dropout (https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf)
 
 We first split the dataset into train, test and validation set. Then we used different parameters(learning rates, epochs, batch sizes) to train our network and based on the results we found out the model without batch normalization produces highest accuracy(<b>97.469%</b>). So we selected that model as our final deliverable model.
 
