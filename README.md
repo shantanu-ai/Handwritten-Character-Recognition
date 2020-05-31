@@ -84,5 +84,5 @@ The final output after running the ./Handwritten-Character-Recognition/test.py a
 Project report is included in the <b>FML_final.pdf </b>
 
 # Final Result on real test data
-As per the teaching assistants, when they ran the model on the test data set, the model produces an accuracy of <b>97.3% and 86.5% on the easy and hard dataset </b> respectively.
+As per the teaching assistants, when they ran the model on the test data set, the model produces an accuracy of <b>97.3% and 86.5% on the easy and hard test dataset </b> respectively.
 
